@@ -10,14 +10,14 @@ trait ApiService extends QuillSupport {
 
   def getAllApis = {
     val selectAllApis = quote {
-      query[Api].map(p => (p.id, p.method, p.resource, p.summary))
+      query[Api].map(p => (p.id, p.method, p.resource, p.summary, p.status))
     }
     run(selectAllApis)
   }
 
   def getApiById(id:Long) = {
     def selectApi(id:Option[Long]) = quote {
-      query[Api].filter(p => p.id == lift(id))
+      query[Api].filter(_.id == lift(id))
     }
     run(selectApi(Some(id)))
   }
@@ -31,14 +31,14 @@ trait ApiService extends QuillSupport {
 
   def updateApiById(id:Long, api:Api) = {
     def updateApi(id:Option[Long], api:Api) = quote {
-      query[Api].filter(p => p.id == lift(id)).update(lift(api))
+      query[Api].filter(_.id == lift(id)).update(lift(api))
     }
     run(updateApi(Some(id), api))
   }
 
   def removeApiById(id:Long) = {
     def deleteApi(id:Option[Long]) = quote {
-      query[Api].filter(p => p.id == lift(id)).delete
+      query[Api].filter(_.id == lift(id)).delete
     }
     run(deleteApi(Some(id)))
   }

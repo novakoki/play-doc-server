@@ -17,7 +17,7 @@ class ApiController extends Controller with ApiService {
     for {
       apis <- getAllApis
     } yield Ok(apis.map {
-      case (id, method, resource, summary) => Overview(id, method, resource, summary)
+      case (id, method, resource, summary, status) => Overview(id, method, resource, summary, status)
     }.asJson.noSpaces)
   }
 
@@ -61,7 +61,8 @@ class ApiController extends Controller with ApiService {
       "summary" -> optional(text),
       "description" -> optional(text),
       "parameters" -> optional(text),
-      "responses" -> optional(text)
+      "responses" -> optional(text),
+      "status" -> number
     )(Api.apply)(Api.unapply)
   )
 
