@@ -22,16 +22,16 @@ trait TestService extends QuillSupport {
   }
 
   def updateTestById(id:Long, test:Test) = {
-    def updateTest(id:Long, test:Test) = quote {
+    def updateTest(id:Option[Long], test:Test) = quote {
       query[Test].filter(_.id == lift(id))
     }
-    run(updateTest(id, test))
+    run(updateTest(Some(id), test))
   }
 
   def deleteTestById(id:Long) = {
-    def deleteTest(id:Long) = quote {
+    def deleteTest(id:Option[Long]) = quote {
       query[Test].filter(_.id == lift(id)).delete
     }
-    run(deleteTest(id))
+    run(deleteTest(Some(id)))
   }
 }

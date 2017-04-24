@@ -8,5 +8,6 @@ case class Test
   id:Option[Long],
   apiId:Long,
   parameters:Option[String],
+  responses:Option[String],
   status:Int
 )
