@@ -62,7 +62,7 @@ class ApiController extends Controller with ApiService {
       "description" -> optional(text),
       "parameters" -> optional(text),
       "responses" -> optional(text),
-      "status" -> number
+      "status" -> optional(number)
     )(Api.apply)(Api.unapply)
   )
 

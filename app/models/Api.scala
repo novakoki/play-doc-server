@@ -13,7 +13,7 @@ case class Api
   description:Option[String],
   parameters:Option[String],
   responses:Option[String],
-  status:Int
+  status:Option[Int]
 )
 
 case class Overview
@@ -22,5 +22,5 @@ case class Overview
   method:String,
   resource:String,
   summary:Option[String],
-  status:Int
+  status:Option[Int]
 )

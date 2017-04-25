@@ -13,7 +13,9 @@ import play.api.libs.ws._
 /**
   * Created by szq on 2017/4/15.
   */
-class TestController @Inject() (ws:WSClient) extends Controller with TestService {
+class TestController @Inject() (ws:WSClient) extends Controller
+  with TestService
+  with ApiService {
   def getTests(apiId:Long) = Action.async { implicit resquest =>
     for {
       tests <- getTestsByApiId(apiId)
@@ -26,27 +28,36 @@ class TestController @Inject() (ws:WSClient) extends Controller with TestService
     } yield Ok("")
   }
 
-
-  // need to confirm test status
   def createTest(apiId:Long) = Action.async(parse.form(testForm)) { implicit request =>
     val test = request.body
     for {
-      res <- addTest(test)
-      status <- sendTest(test)
+      id <- addTest(test)
+      response <- sendTest(test)
+      r <- updateResponsesById(id, response.body)
     } yield Ok("")
   }
 
   def modifyTest(id:Long) = Action.async(parse.form(testForm)) {implicit request =>
     val test = request.body
     for {
-      res <- updateTestById(id, test)
-      status <- sendTest(test)
+      p <- updateParametersById(id, test.parameters)
+      response <- sendTest(test)
+      r <- updateResponsesById(Some(id), response.body) if response.status == 1
     } yield Ok("")
   }
 
   def sendTest(test:Test) = {
-    val req = ws.url("")
-    req.get
+    for {
+      apis <- getApiById(test.apiId)
+      api = apis.head if apis.nonEmpty
+      req = ws.url(api.resource)
+      res <- api.method match {
+        case "GET" => req.get
+        // case "POST" => req.post
+        // case "PUT" => req.put
+        case "DELETE" => req.delete
+      }
+    } yield res
   }
 
   val testForm = Form(
@@ -55,7 +66,7 @@ class TestController @Inject() (ws:WSClient) extends Controller with TestService
       "apiId" -> longNumber,
       "parameters" -> optional(text),
       "responses" -> optional(text),
-      "status" -> number
+      "status" -> optional(number)
     )(Test.apply)(Test.unapply)
   )
 }

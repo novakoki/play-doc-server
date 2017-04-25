@@ -24,7 +24,7 @@ trait ApiService extends QuillSupport {
 
   def addApi(api:Api) = {
     def insertApi(api:Api) = quote {
-      query[Api].insert(lift(api))
+      query[Api].insert(lift(api)).returning(_.id)
     }
     run(insertApi(api))
   }

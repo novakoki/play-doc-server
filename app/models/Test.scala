@@ -9,5 +9,5 @@ case class Test
   apiId:Long,
   parameters:Option[String],
   responses:Option[String],
-  status:Int
+  status:Option[Int]
 )
