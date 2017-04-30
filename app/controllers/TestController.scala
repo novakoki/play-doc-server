@@ -5,10 +5,11 @@ import services._
 import play.api.data._
 import play.api.data.Forms._
 import models._
-
 import javax.inject.Inject
-
 import play.api.libs.ws._
+import io.circe.syntax._
+import io.circe.generic.auto._
+import scala.concurrent.Future
 
 /**
   * Created by szq on 2017/4/15.
@@ -16,10 +17,11 @@ import play.api.libs.ws._
 class TestController @Inject() (ws:WSClient) extends Controller
   with TestService
   with ApiService {
+
   def getTests(apiId:Long) = Action.async { implicit resquest =>
     for {
       tests <- getTestsByApiId(apiId)
-    } yield Ok("")
+    } yield Ok(tests.asJson.noSpaces)
   }
 
   def removeTest(id:Long) = Action.async {implicit request =>
@@ -42,22 +44,29 @@ class TestController @Inject() (ws:WSClient) extends Controller
     for {
       p <- updateParametersById(id, test.parameters)
       response <- sendTest(test)
-      r <- updateResponsesById(Some(id), response.body) if response.status == 1
+      r <- updateResponsesById(Some(id), response.body) if response.status == 200
     } yield Ok("")
   }
 
   def sendTest(test:Test) = {
-    for {
-      apis <- getApiById(test.apiId)
-      api = apis.head if apis.nonEmpty
-      req = ws.url(api.resource)
-      res <- api.method match {
-        case "GET" => req.get
-        // case "POST" => req.post
-        // case "PUT" => req.put
-        case "DELETE" => req.delete
+    val apis = getApiById(test.apiId)
+    apis.flatMap {
+      case api :: Nil => {
+        val req = ws.url(s"http://${api.resource}").withBody(test.parameters.getOrElse(""))
+        req.execute(api.method)
       }
-    } yield res
+    }
+  }
+
+  def sendTest(apiId:Long, parameters:Option[String] = None) = Action.async {
+    val apis = getApiById(apiId)
+    apis.flatMap {
+      case api :: Nil => {
+        val req = ws.url(s"http://${api.resource}").withBody(parameters.getOrElse(""))
+        req.execute(api.method).map(p => Ok(p.body))
+      }
+      case _ => Future.successful(NotFound)
+    }
   }
 
   val testForm = Form(

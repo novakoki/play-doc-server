@@ -9,6 +9,7 @@ scalaVersion := "2.11.8"
 libraryDependencies ++= Seq(
   ws,
   "org.scalatestplus.play" %% "scalatestplus-play" % "2.0.0" % Test,
+  "org.scalamock" %% "scalamock-scalatest-support" % "3.5.0" % Test,
   "org.scalameta" %% "scalameta" % "1.7.0",
   "com.beachape.filemanagement" %% "schwatcher" % "0.3.2",
   "io.circe" %% "circe-core" % "0.7.0",

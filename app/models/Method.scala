@@ -5,5 +5,5 @@ package models
   */
 object Method extends Enumeration {
   val GET, PATCH, POST, PUT, DELETE, HEAD, OPTION = Value
-  def isMethod(s:String) = values.exists(p => p.toString == s)
+  def isMethod(s:String):Boolean = values.exists(_.toString == s)
 }

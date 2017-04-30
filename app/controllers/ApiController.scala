@@ -56,7 +56,7 @@ class ApiController extends Controller with ApiService {
   def apiForm = Form(
     mapping (
       "id" -> optional(longNumber),
-      "method" -> nonEmptyText.verifying(s => Method.isMethod(s)),
+      "method" -> nonEmptyText.verifying(Method.isMethod(_)),
       "resource" -> nonEmptyText,
       "summary" -> optional(text),
       "description" -> optional(text),
