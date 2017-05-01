@@ -14,6 +14,13 @@ trait TestService extends QuillSupport {
     run(selectTests(apiId))
   }
 
+  def getTestById(id:Long) = {
+    def selectTest(id:Option[Long]) = quote {
+      query[Test].filter(_.id == lift(id))
+    }
+    run(selectTest(Some(id)))
+  }
+
   def addTest(test:Test) = {
     def insertTest(test:Test) = quote {
       query[Test].insert(lift(test)).returning(_.id)

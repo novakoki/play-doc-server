@@ -3,21 +3,20 @@
 # https://www.playframework.com/documentation/latest/ScalaRouting
 # ~~~~
 
-#API
+# API
 GET     /apis            controllers.ApiController.getApis
 GET     /apis/:id        controllers.ApiController.getApi(id:Long)
 POST    /apis            controllers.ApiController.createApi
 PUT     /apis/:id        controllers.ApiController.modifyApi(id:Long)
 DELETE  /apis/:id        controllers.ApiController.removeApi(id:Long)
 
-#Test
+# Test
 GET     /apis/:apiId/tests    controllers.TestController.getTests(apiId:Long)
 POST    /apis/:apiId/tests    controllers.TestController.createTest(apiId:Long)
 PUT     /tests/:id       controllers.TestController.modifyTest(id:Long)
 DELETE  /tests/:id       controllers.TestController.removeTest(id:Long)
 
-#Ws
-GET     /ws/:apiId              controllers.TestController.sendTest(apiId:Long)
+# GET     /apis/:apiId/tests/:id      controllers.TestController.sendTest(apiId:Long, id:Long)
 
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file   controllers.Assets.versioned(path="/public", file: Asset)

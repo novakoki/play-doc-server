@@ -34,8 +34,8 @@ class TestController @Inject() (ws:WSClient) extends Controller
     val test = request.body
     for {
       id <- addTest(test)
-      response <- sendTest(test)
-      r <- updateResponsesById(id, response.body)
+      resOpt <- sendTest(test)
+      r <- updateResponses(id, resOpt)
     } yield Ok("")
   }
 
@@ -43,31 +43,47 @@ class TestController @Inject() (ws:WSClient) extends Controller
     val test = request.body
     for {
       p <- updateParametersById(id, test.parameters)
-      response <- sendTest(test)
-      r <- updateResponsesById(Some(id), response.body) if response.status == 200
+      resOpt <- sendTest(test)
+      r <- updateResponses(Some(id), resOpt)
     } yield Ok("")
   }
 
-  def sendTest(test:Test) = {
-    val apis = getApiById(test.apiId)
-    apis.flatMap {
-      case api :: Nil => {
-        val req = ws.url(s"http://${api.resource}").withBody(test.parameters.getOrElse(""))
-        req.execute(api.method)
-      }
+  def updateResponses(id:Option[Long], resOpt:Option[WSResponse]) = {
+    resOpt match {
+      case Some(res) => updateResponsesById(id, res.body).map(Some(_))
+      case None => Future.successful(None)
     }
   }
 
-  def sendTest(apiId:Long, parameters:Option[String] = None) = Action.async {
-    val apis = getApiById(apiId)
-    apis.flatMap {
-      case api :: Nil => {
-        val req = ws.url(s"http://${api.resource}").withBody(parameters.getOrElse(""))
-        req.execute(api.method).map(p => Ok(p.body))
-      }
-      case _ => Future.successful(NotFound)
+  def sendTest(test:Test) = {
+    for {
+      apis <- getApiById(test.apiId)
+      resOpt <- sendTestOpt(apis.headOption, Some(test))
+    } yield resOpt
+  }
+
+  def sendTestOpt(apiOpt:Option[Api], testOpt:Option[Test]) = {
+    apiOpt match {
+      case Some(api) =>
+        testOpt match {
+          case Some(test) => val req = ws.url(s"http://${api.resource}").withBody(test.parameters.getOrElse(""))
+            req.execute(api.method).map(Some(_))
+          case _ => Future.successful(None)
+        }
+      case _ => Future.successful(None)
     }
   }
+
+//  def sendTest(apiId:Long, id:Long):Action[AnyContent] = Action.async {implicit request =>
+//    for {
+//      apis <- getApiById(apiId)
+//      tests <- getTestById(id)
+//      res <- sendTest(apis.headOption, tests.headOption)
+//    } yield res match {
+//      case Some(r) => Ok(r.body)
+//      case None => NotFound
+//    }
+//  }
 
   val testForm = Form(
     mapping(
