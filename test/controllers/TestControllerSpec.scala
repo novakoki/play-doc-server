@@ -3,10 +3,6 @@ package controllers
 import play.api.test._
 import play.api.test.Helpers._
 import org.scalatestplus.play._
-import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.duration._
-import scala.concurrent._
-import models._
 
 /**
   * Created by szq on 2017/4/26.
