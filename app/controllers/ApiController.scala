@@ -53,7 +53,7 @@ class ApiController extends Controller with ApiService {
     } yield Ok("")
   }
 
-  def apiForm = Form(
+  val apiForm = Form(
     mapping (
       "id" -> optional(longNumber),
       "method" -> nonEmptyText.verifying(Method.isMethod(_)),
