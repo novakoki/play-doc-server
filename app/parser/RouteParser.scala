@@ -12,15 +12,15 @@ trait RouteParser {
     val comment = """^#(.+)$""".r
     val route = """^(\S+)\s+(\S+)\s+(.+)$""".r
     rawRoute match {
+      case comment(c) => None
       case route(method, rawPath, rawAction) => {
-          val path = parsePath(rawPath)
-          val action = parseAction(rawAction)
-          Some(Route(method, path, action))
-        }
+        val path = parsePath(rawPath)
+        val action = parseAction(rawAction)
+        Some(Route(method, path, action))
+      }
       case _ => None
     }
   }
-  parsers.Parsed.Success
 
   def parsePath (rawPath: String) = {
     val static = """^(\S+)$""".r

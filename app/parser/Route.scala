@@ -1,4 +1,4 @@
-package models
+package parser
 
 import scala.collection.immutable.Seq
 import scala.meta.Term

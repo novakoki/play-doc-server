@@ -1,6 +1,6 @@
 package parser
 
-import scala.meta._
+import io.circe.syntax._
 import org.scalatest._
 
 /**
@@ -8,6 +8,7 @@ import org.scalatest._
   */
 class ControllerParserSpec extends FunSuite with Matchers with ControllerParser {
   test("controller") {
-    println(parseController("app/controllers/ApiController.scala"))
+    val ast = parseController("app/controllers/ApiController.scala")
+    println(ast.head.actions.asJson)
   }
 }

@@ -1,14 +1,16 @@
 package controllers
 
 import play.api.mvc._
-import services._
+import services.{ApiService, TestService}
 import play.api.data._
 import play.api.data.Forms._
-import models._
+import models.{Api, Test}
 import javax.inject.Inject
+
 import play.api.libs.ws._
 import io.circe.syntax._
 import io.circe.generic.auto._
+
 import scala.concurrent.Future
 
 /**
@@ -24,7 +26,7 @@ class TestController @Inject() (ws:WSClient) extends Controller
     } yield Ok(tests.asJson.noSpaces)
   }
 
-  def removeTest(id:Long) = Action.async {implicit request =>
+  def removeTest(id:Long) = Action.async { implicit request =>
     for {
       res <- deleteTestById(id)
     } yield Ok("")
@@ -39,7 +41,7 @@ class TestController @Inject() (ws:WSClient) extends Controller
     } yield Ok("")
   }
 
-  def modifyTest(id:Long) = Action.async(parse.form(testForm)) {implicit request =>
+  def modifyTest(id:Long) = Action.async(parse.form(testForm)) { implicit request =>
     val test = request.body
     for {
       p <- updateParametersById(id, test.parameters)
