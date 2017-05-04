@@ -7,10 +7,12 @@ import com.beachape.filemanagement.Messages._
 import play.api.Logger
 import java.nio.file.Paths
 import java.nio.file.StandardWatchEventKinds._
+
+import com.google.inject.Singleton
 /**
   * Created by szq on 2017/5/2.
   */
-
+@Singleton
 class WatchService {
   implicit val system = ActorSystem("actorSystem")
   val fileMonitorActor = system.actorOf(MonitorActor(concurrency = 2))

@@ -20,13 +20,12 @@ case class Path
   name: String,
   regex: Option[String]
 ) {
-  def getType =
-    `type` match {
-      case 0 => "static"
-      case 1 => "default"
-      case 2 => "wildcard"
-      case 3 => "custom"
-    }
+  def getType = `type` match {
+    case 0 => "static"
+    case 1 => "default"
+    case 2 => "wildcard"
+    case 3 => "custom"
+  }
 }
 
 case class ActionCall

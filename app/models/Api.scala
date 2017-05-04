@@ -6,21 +6,21 @@ package models
 
 case class Api
 (
-  id:Option[Long],
+  id:Option[Long] = None,
   method:String,
   resource:String,
-  summary:Option[String],
-  description:Option[String],
-  parameters:Option[String],
-  responses:Option[String],
-  status:Option[Int]
+  summary:Option[String] = None,
+  description:Option[String] = None,
+  parameters:Option[String] = None,
+  responses:Option[String] = None,
+  status:Option[Int] = None
 )
 
 case class Overview
 (
-  id:Option[Long],
+  id:Option[Long] = None,
   method:String,
   resource:String,
-  summary:Option[String],
-  status:Option[Int]
+  summary:Option[String] = None,
+  status:Option[Int] = None
 )

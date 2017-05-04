@@ -8,7 +8,6 @@ import org.scalatest._
   */
 class ControllerParserSpec extends FunSuite with Matchers with ControllerParser {
   test("controller") {
-    val ast = parseController("app/controllers/ApiController.scala")
-    println(ast.head.actions.asJson)
+
   }
 }

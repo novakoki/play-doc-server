@@ -11,12 +11,11 @@ import scala.collection.immutable.Seq
   * Created by szq on 2017/5/2.
   */
 trait ControllerParser {
-  def parseController(filepath:String) = {
-    val parseTry = new File(filepath).parse[Source]
-    parseTry match {
+  def parseController(file:File):Seq[Controller] = {
+    file.parse[Source] match {
       case parsers.Parsed.Success(tree) => {
         val controllers = tree.collect {
-          case q"class $controller extends $template" => {
+          case q"class $controller [..$tparams] ..$ctorMods (...$paramss) extends $template" => {
             template match {
               case template"Controller with ..$ctorcalls { $param => ..$block }" => (controller, block)
             }
@@ -25,8 +24,8 @@ trait ControllerParser {
 
         controllers.map {
           case (controller, block) => {
-            val forms = parseForm(block)
-            val actions = parseAction(block, forms)
+            val forms = collectForm(block)
+            val actions = collectAction(block, forms)
             Controller(controller, actions)
           }
         }
@@ -35,7 +34,7 @@ trait ControllerParser {
     }
   }
 
-  def parseAction(block:Seq[Stat], forms:Seq[Form]) = {
+  private def collectAction(block:Seq[Stat], forms:Seq[Form]) = {
     block.collect {
       case q"def $action(...$paras) = Action {$block}" => Action(action, paras, None)
       case q"def $action(...$paras) = Action.async {$block}" => Action(action, paras, None)
@@ -46,7 +45,7 @@ trait ControllerParser {
     }
   }
 
-  def parseForm(block:Seq[Stat]) = {
+  private def collectForm(block:Seq[Stat]) = {
     block.collect {
       case q"val $form = Form(mapping(..$paras)($apply)($unapply))" => Form(form, paras)
     }

@@ -8,7 +8,7 @@ import scala.meta._
 import models._
 
 trait RouteParser {
-  def parseRoute (rawRoute: String) = {
+  def parseRoute (rawRoute: String):Option[Route] = {
     val comment = """^#(.+)$""".r
     val route = """^(\S+)\s+(\S+)\s+(.+)$""".r
     rawRoute match {
@@ -22,7 +22,7 @@ trait RouteParser {
     }
   }
 
-  def parsePath (rawPath: String) = {
+  private def parsePath (rawPath: String) = {
     val static = """^(\S+)$""".r
     val default = """^:(\S+)$""".r
     val wildcard = """^*(\S+)$""".r
@@ -37,7 +37,7 @@ trait RouteParser {
     }.filter(_.name.nonEmpty).toList
   }
 
-  def parseAction (rawAction: String) = {
+  private def parseAction (rawAction: String) = {
     rawAction.parse[Stat].get match {
       case q"$controllers.$controller.$method" => ActionCall(controller, method, None)
       case q"$controllers.$controller.$method(..$params)" => {
