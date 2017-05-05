@@ -3,16 +3,17 @@ package controllers
 import play.api.mvc._
 import play.api.data._
 import play.api.data.Forms._
-import models.{Api, Overview, Method}
+import models.{Api, Method, Overview}
 import services.ApiService
 import io.circe._
 import io.circe.syntax._
 import io.circe.generic.auto._
+import _root_.parser.AppParser
 
 /**
   * Created by szq on 2017/4/13.
   */
-class ApiController extends Controller with ApiService {
+class ApiController extends Controller with ApiService with AppParser {
   def getApis = Action.async { implicit request =>
     for {
       apis <- getAllApis
@@ -31,6 +32,8 @@ class ApiController extends Controller with ApiService {
       }
     }
   }
+
+  // 1234
 
   def createApi = Action.async(parse.form(apiForm)) { implicit request =>
     for {

@@ -9,7 +9,7 @@ import io.getquill._
   */
 trait QuillSupport {
   lazy val QDB = new MysqlAsyncContext[SnakeCase]("QDB")
-  implicit val context = scala.concurrent.ExecutionContext.Implicits.global
+  implicit val QDBcontext = scala.concurrent.ExecutionContext.Implicits.global
   implicit val encodeJson = MappedEncoding[Json, String](_.noSpaces)
   implicit val decodeJson = MappedEncoding[String, Json](parse(_) match {
     case Right(r) => r

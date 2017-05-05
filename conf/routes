@@ -17,6 +17,6 @@ PUT     /tests/:id       controllers.TestController.modifyTest(id:Long)
 DELETE  /tests/:id       controllers.TestController.removeTest(id:Long)
 
 # GET     /apis/:apiId/tests/:id      controllers.TestController.sendTest(apiId:Long, id:Long)
-
+# Get
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file   controllers.Assets.versioned(path="/public", file: Asset)

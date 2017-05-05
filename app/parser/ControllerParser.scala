@@ -11,7 +11,7 @@ import scala.collection.immutable.Seq
   * Created by szq on 2017/5/2.
   */
 trait ControllerParser {
-  def parseController(file:File):Seq[Controller] = {
+  def parseController(file:File):List[Controller] = {
     file.parse[Source] match {
       case parsers.Parsed.Success(tree) => {
         val controllers = tree.collect {
