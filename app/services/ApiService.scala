@@ -10,8 +10,8 @@ trait ApiService extends QuillSupport {
   import QDB._
 
   def getAllApis = {
-    val selectAllApis = quote {
-      query[Api].map(p => (p.id, p.method, p.resource, p.summary, p.status))
+    def selectAllApis = quote {
+      query[Api].map(p => (p.id, p.method, p.resource, p.summary, p.status, p.repoId))
     }
     run(selectAllApis)
   }
@@ -37,11 +37,11 @@ trait ApiService extends QuillSupport {
     run(insertApi(api))
   }
 
-  def updateApiById(id:Long, api:Api) = {
-    def updateApi(id:Option[Long], api:Api) = quote {
-      query[Api].filter(_.id == lift(id)).update(lift(api))
+  def updateApiById(api:Api) = {
+    def updateApi(api:Api) = quote {
+      query[Api].filter(_.id == lift(api.id)).update(lift(api))
     }
-    run(updateApi(Some(id), api))
+    run(updateApi(api))
   }
 
   def updateParametersById(id:Option[Long], parameters:Option[String]) = {

@@ -13,7 +13,8 @@ case class Api
   description:Option[String] = None,
   parameters:Option[String] = None,
   responses:Option[String] = None,
-  status:Option[Int] = None
+  status:Option[Int] = None,
+  repoId:Option[Int] = None
 )
 
 case class Overview
@@ -22,5 +23,6 @@ case class Overview
   method:String,
   resource:String,
   summary:Option[String] = None,
-  status:Option[Int] = None
+  status:Option[Int] = None,
+  repoId:Option[Int] = None
 )

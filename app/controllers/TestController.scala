@@ -70,9 +70,9 @@ class TestController @Inject() (ws:WSClient) extends Controller
         testOpt match {
           case Some(test) => val req = ws.url(s"http://${api.resource}").withBody(test.parameters.getOrElse(""))
             req.execute(api.method).map(Some(_))
-          case _ => Future.successful(None)
+          case _ => Future(None)
         }
-      case _ => Future.successful(None)
+      case _ => Future(None)
     }
   }
 

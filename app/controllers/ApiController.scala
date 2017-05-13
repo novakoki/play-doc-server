@@ -18,7 +18,7 @@ class ApiController extends Controller with ApiService with AppParser {
     for {
       apis <- getAllApis
     } yield Ok(apis.map {
-      case (id, method, resource, summary, status) => Overview(id, method, resource, summary, status)
+      case (id, method, resource, summary, status, repoId) => Overview(id, method, resource, summary, status, repoId)
     }.asJson.noSpaces)
   }
 
@@ -43,10 +43,10 @@ class ApiController extends Controller with ApiService with AppParser {
     }
   }
 
-  def modifyApi(id:Long) = Action.async(parse.form(apiForm)) { implicit request =>
+  def modifyApi = Action.async(parse.form(apiForm)) { implicit request =>
     val api = request.body
     for {
-      res <- updateApiById(id, api)
+      res <- updateApiById(api)
     } yield Ok("")
   }
 
@@ -65,7 +65,8 @@ class ApiController extends Controller with ApiService with AppParser {
       "description" -> optional(text),
       "parameters" -> optional(text),
       "responses" -> optional(text),
-      "status" -> optional(number)
+      "status" -> optional(number),
+      "repoId" -> optional(number)
     )(Api.apply)(Api.unapply)
   )
 
