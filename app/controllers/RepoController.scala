@@ -40,6 +40,7 @@ class RepoController extends Controller with RepoService {
       "id" -> optional(longNumber),
       "name" -> nonEmptyText,
       "baseUrl" -> nonEmptyText,
+      "rootPath" -> nonEmptyText,
       "description" -> text
     )(Repository.apply)(Repository.unapply)
   )

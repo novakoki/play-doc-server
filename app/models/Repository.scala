@@ -8,5 +8,6 @@ case class Repository
   id:Option[Long],
   name:String,
   baseUrl:String,
+  rootPath:String,
   description:String
 )

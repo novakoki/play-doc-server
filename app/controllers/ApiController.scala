@@ -33,8 +33,6 @@ class ApiController extends Controller with ApiService with AppParser {
     }
   }
 
-  // 1234
-
   def createApi = Action.async(parse.form(apiForm)) { implicit request =>
     for {
       res <- addApi(request.body)
@@ -63,10 +61,12 @@ class ApiController extends Controller with ApiService with AppParser {
       "resource" -> nonEmptyText,
       "summary" -> optional(text),
       "description" -> optional(text),
-      "parameters" -> optional(text),
-      "responses" -> optional(text),
+      "expect_parameters" -> optional(text),
+      "expect_responses" -> optional(text),
+      "actual_responses" -> optional(text),
+      "actual_responses" -> optional(text),
       "status" -> optional(number),
-      "repoId" -> optional(number)
+      "repoId" -> longNumber
     )(Api.apply)(Api.unapply)
   )
 

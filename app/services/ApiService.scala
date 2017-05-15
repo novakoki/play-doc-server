@@ -16,6 +16,13 @@ trait ApiService extends QuillSupport {
     run(selectAllApis)
   }
 
+  def getApisByRepoId(repoId:Long) = {
+    def selectApis(repoId:Long) = quote {
+      query[Api].filter(_.repoId == lift(repoId))
+    }
+    run(selectApis(repoId))
+  }
+
   def getApiById(id:Long) = {
     def selectApi(id:Option[Long]) = quote {
       query[Api].filter(_.id == lift(id))
@@ -46,7 +53,7 @@ trait ApiService extends QuillSupport {
 
   def updateParametersById(id:Option[Long], parameters:Option[String]) = {
     def updateApi(id:Option[Long], parameters:Option[String]) = quote {
-      query[Api].filter(_.id == lift(id)).update(_.parameters -> lift(parameters))
+      query[Api].filter(_.id == lift(id)).update(_.actualParameters -> lift(parameters))
     }
     run(updateApi(id, parameters))
   }
@@ -63,7 +70,7 @@ trait ApiService extends QuillSupport {
 //    run(updateApis(apis.toList))
     apis traverse { api =>
       getApiByMethodAndResource(api.method, api.resource) flatMap {
-        case head::tail => updateParametersById(head.id, head.parameters)
+        case head::tail => updateParametersById(head.id, head.actualParameters)
         case Nil => addApi(api)
       }
     }

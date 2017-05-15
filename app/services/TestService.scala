@@ -37,7 +37,7 @@ trait TestService extends QuillSupport {
 
   def updateResponsesById(id:Option[Long], responses:String) = {
     def updateResponses(id:Option[Long], responses:Option[String]) = quote {
-      query[Test].filter(_.id == lift(id)).update(_.responses -> lift(responses))
+      query[Test].filter(_.id == lift(id)).update(_.actualResponses -> lift(responses))
     }
     run(updateResponses(id, Some(responses)))
   }

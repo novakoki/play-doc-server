@@ -20,17 +20,17 @@ trait AppParser extends ControllerParser with RouteParser {
     new File(path).listFiles.filter(_.isFile).map(parseController).toList
   }
 
-  def parseApis:Future[List[Api]] = {
+  def parseApis(repoId:Long, rootPath:String):Future[List[Api]] = {
     for {
-      routes <- getRoutes()
-      controllers <- getControllers()
+      routes <- getRoutes(s"${rootPath}/conf/routes")
+      controllers <- getControllers(s"${rootPath}/app/controllers")
     } yield {
       for {
         Route(method, path, actionCall) <- routes
         controller <- controllers.flatten
         action <- controller.actions
         api = Api(method = method, resource = path.map(_.name).mkString("/"),
-          parameters = Some(action.asJson.noSpaces)
+          actualParameters = Some(action.asJson.noSpaces), repoId = repoId
         ) if actionCall.controller.value == controller.name.value &&
         actionCall.method.value == action.name.value
       } yield api

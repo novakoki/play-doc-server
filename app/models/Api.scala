@@ -11,10 +11,12 @@ case class Api
   resource:String,
   summary:Option[String] = None,
   description:Option[String] = None,
-  parameters:Option[String] = None,
-  responses:Option[String] = None,
+  actualParameters:Option[String] = None,
+  actualResponses:Option[String] = None,
+  expectParameters:Option[String] = None,
+  expectResponses:Option[String] = None,
   status:Option[Int] = None,
-  repoId:Option[Int] = None
+  repoId:Long
 )
 
 case class Overview
@@ -24,5 +26,5 @@ case class Overview
   resource:String,
   summary:Option[String] = None,
   status:Option[Int] = None,
-  repoId:Option[Int] = None
+  repoId:Long
 )

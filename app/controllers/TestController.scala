@@ -92,7 +92,8 @@ class TestController @Inject() (ws:WSClient) extends Controller
       "id" -> optional(longNumber),
       "apiId" -> longNumber,
       "parameters" -> optional(text),
-      "responses" -> optional(text),
+      "expect_responses" -> optional(text),
+      "actual_responses" -> optional(text),
       "status" -> optional(number)
     )(Test.apply)(Test.unapply)
   )

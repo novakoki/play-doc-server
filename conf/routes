@@ -10,7 +10,7 @@ GET     /repos           controllers.RepoController.getRepos
 GET     /apis            controllers.ApiController.getApis
 GET     /apis/:id        controllers.ApiController.getApi(id:Long)
 POST    /apis            controllers.ApiController.createApi
-PUT     /apis/:id        controllers.ApiController.modifyApi(id:Long)
+PUT     /apis        controllers.ApiController.modifyApi
 DELETE  /apis/:id        controllers.ApiController.removeApi(id:Long)
 
 # Test
@@ -20,6 +20,9 @@ PUT     /tests/:id       controllers.TestController.modifyTest(id:Long)
 DELETE  /tests/:id       controllers.TestController.removeTest(id:Long)
 
 # GET     /apis/:apiId/tests/:id      controllers.TestController.sendTest(apiId:Long, id:Long)
+
+# Msg
+GET     /msg      controllers.MsgController.socket
 
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file   controllers.Assets.versioned(path="/public", file: Asset)
