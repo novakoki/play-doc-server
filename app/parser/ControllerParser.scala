@@ -5,6 +5,7 @@ import java.io.File
 import scala.meta._
 import _root_.io.circe._
 import _root_.io.circe.syntax._
+import _root_.io.circe.generic.auto._
 import scala.collection.immutable.Seq
 
 /**
@@ -51,53 +52,23 @@ trait ControllerParser {
     }
   }
 
-  implicit def formToMap(form:Form):Map[String, String] = {
-    def helper(mappings:Seq[Term.Arg], acc:Map[String, String]):Map[String, String] = {
-      mappings match {
-        case head::tail => {
-          val q"$key -> $value" = head
-          helper(tail, acc + (key.toString.drop(1).dropRight(1) -> value.toString))
-        }
-        case Nil => acc
-      }
-    }
-    helper(form.mappings, Map.empty)
-  }
-
-  implicit def actionToMap(action:Action):Map[String, Map[String, String]] = {
-    def helper(paras:Seq[Term.Param], acc:Map[String, String]):Map[String, String] = {
-      paras match {
-        case head::tail => {
-          val param"..$mods $key: $value = $default" = head
-          helper(tail, acc + (key.toString -> value.toString))
-        }
-        case Nil => acc
-      }
-    }
-
-    val emptyMap = Map.empty[String,String]
-
-    val parasMap = action.parameters match {
-      case paras::Nil => helper(paras, emptyMap)
-      case Nil => emptyMap
-    }
-
-    val formMap = action.form match {
-      case Some(f) => f.toMap
-      case None => emptyMap
-    }
-
-    Map(
-      "query" -> parasMap,
-      "body" -> formMap
-    )
-  }
-
-  implicit val formEncoder:Encoder[Form] = new Encoder[Form] {
-    final def apply(form:Form):Json = form.toMap.asJson
-  }
-
   implicit val actionEncoder:Encoder[Action] = new Encoder[Action] {
-    final def apply(action:Action):Json = action.toMap.asJson
+    final def apply(action:Action):Json = {
+      val paraList = action.parameters match {
+        case paras::Nil => paras.map {
+          case param"..$mods $key: $value = $default" => Parameter(key.toString, value.toString, "url")
+        }.toList
+        case _ => Nil
+      }
+
+      val formList = action.form match {
+        case Some(f) => f.mappings.map {
+          case q"$key -> $value" => Parameter(key.toString.drop(1).dropRight(1), value.toString, "body")
+        }.toList
+        case None => Nil
+      }
+
+      (paraList ++ formList).asJson
+    }
   }
 }

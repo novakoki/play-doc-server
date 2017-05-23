@@ -25,3 +25,10 @@ case class Form
   name:Pat,
   mappings:Seq[Term.Arg]
 )
+
+case class Parameter
+(
+  name:String,
+  `type`:String,
+  location:String
+)

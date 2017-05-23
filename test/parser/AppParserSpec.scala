@@ -11,6 +11,6 @@ import scala.concurrent.duration._
   */
 class AppParserSpec  extends FunSuite with Matchers with AppParser with ApiService {
   test("app") {
-    Await.result(parseApis, 5 seconds).foreach(println)
+    Await.result(batchUpdateApis(1, Await.result(parseApis(1, "."), 5 seconds)), 5 seconds)
   }
 }

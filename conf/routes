@@ -5,6 +5,7 @@
 
 #Repository
 GET     /repos           controllers.RepoController.getRepos
+GET     /parse-repo/:id           controllers.RepoController.parseRepo(id:Long)
 
 # API
 GET     /apis            controllers.ApiController.getApis
@@ -18,8 +19,6 @@ GET     /apis/:apiId/tests    controllers.TestController.getTests(apiId:Long)
 POST    /apis/:apiId/tests    controllers.TestController.createTest(apiId:Long)
 PUT     /tests/:id       controllers.TestController.modifyTest(id:Long)
 DELETE  /tests/:id       controllers.TestController.removeTest(id:Long)
-
-# GET     /apis/:apiId/tests/:id      controllers.TestController.sendTest(apiId:Long, id:Long)
 
 # Msg
 GET     /msg      controllers.MsgController.socket

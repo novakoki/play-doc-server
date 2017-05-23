@@ -30,11 +30,11 @@ trait ApiService extends QuillSupport {
     run(selectApi(Some(id)))
   }
 
-  def getApiByMethodAndResource(method:String, resource:String) = {
-    def selectApi(method:String, resource:String) = quote {
-      query[Api].filter(p => p.method == lift(method) && p.resource == lift(resource))
+  def getApiByMethodAndResourceAndRepoId(method:String, resource:String, repoId:Long) = {
+    def selectApi(method:String, resource:String, repoId:Long) = quote {
+      query[Api].filter(p => p.method == lift(method) && p.resource == lift(resource) && p.repoId == lift(repoId))
     }
-    run(selectApi(method, resource))
+    run(selectApi(method, resource, repoId))
   }
 
   def addApi(api:Api) = {
@@ -58,35 +58,13 @@ trait ApiService extends QuillSupport {
     run(updateApi(id, parameters))
   }
 
-  def batchUpdateApis(apis:List[Api]) = {
-//    def updateApis(apis:List[Api]) = quote {
-//      liftQuery(apis).foreach { api =>
-//        val q = query[Api].filter(p => p.method == api.method && p.resource == api.resource)
-//        if (q.nonEmpty)
-//          q.update(_.parameters -> api.parameters)
-//        else query[Api].insert(api)
-//      }
-//    }
-//    run(updateApis(apis.toList))
+  def batchUpdateApis(repoId:Long, apis:List[Api]) = {
     apis traverse { api =>
-      getApiByMethodAndResource(api.method, api.resource) flatMap {
-        case head::tail => updateParametersById(head.id, head.actualParameters)
+      getApiByMethodAndResourceAndRepoId(api.method, api.resource, repoId) flatMap {
+        case head::tail => updateParametersById(head.id, api.actualParameters)
         case Nil => addApi(api)
       }
     }
-    //
-//    for {
-//      api <- apis
-//    } yield {
-//      for {
-//        res <- getApiByMethodAndResource(api.method, api.resource)
-//      } yield {
-//        res match {
-//          case head::Nil => updateParametersById(head.id, head.parameters)
-//          case Nil => addApi(api)
-//        }
-//      }
-//    }
   }
 
   def removeApiById(id:Long) = {

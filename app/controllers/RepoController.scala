@@ -6,11 +6,12 @@ import services._
 import io.circe.syntax._
 import io.circe.generic.auto._
 import models.Repository
+import parser.AppParser
 
 /**
   * Created by szq on 2017/5/13.
   */
-class RepoController extends Controller with RepoService {
+class RepoController extends Controller with RepoService with ApiService with AppParser {
   def getRepos = Action.async {
     for {
       repos <- getAllRepos
@@ -33,6 +34,15 @@ class RepoController extends Controller with RepoService {
     for {
       r <- removeRepoById(id)
     } yield Ok("")
+  }
+
+  def parseRepo(id:Long) = Action.async {
+    for {
+      apis <- parseApis(id, ".")
+      r <- batchUpdateApis(id, apis)
+    } yield {
+      Ok(apis.toString)
+    }
   }
 
   val repoForm = Form(
